@@ -1,0 +1,118 @@
+<!-- Example where annotations within the controller class are not used. In this case, all of the "plumbing" must be added
+        here.
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    &lt;!&ndash; BeanNameURLHandlerMapping will compare the url to a bean matching the name and choose the controller
+            based on the url &ndash;&gt;
+    <bean id="HandlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+    &lt;!&ndash; The servlet maps the welcome.html page to appropriate controller or "Data Generator" &ndash;&gt;
+    <bean name="/FirstSpringMVC/welcome.html" class="com.springapp.mvc.HelloController" />
+
+    &lt;!&ndash; This tells the Front Controller to match on the following: */WEB-INF/pages/<TBDBYCONTROLLER>.jsp &ndash;&gt;
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>-->
+
+<!--
+Example using annotations with path variables and maps to access the variables in controller functions
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    &lt;!&ndash;
+    BeanNameURLHandlerMapping will compare the url to a bean matching the name and choose the controller
+            based on the url. This is not needed if using annotations, but the statement at the end of this comment
+            block becomes necessary.
+
+    <bean id="HandlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+    The servlet maps the welcome.html page to appropriate controller or "Data Generator." This
+            is not needed if using annotations in the controller class, but the statement below becomes necessary.
+
+    <bean name="/FirstSpringMVC/welcome.html" class="com.springapp.mvc.HelloController" />
+    &ndash;&gt;
+
+    <context:component-scan base-package="com.springapp.mvc" />
+    <mvc:annotation-driven/>
+
+    &lt;!&ndash; The line above is necessary if you want to use annotations for request mapping.
+            Make sure mvc and the schema are properly defined in the header. Out of the
+             box they are mapped to cache instead of mvc.&ndash;&gt;
+
+    &lt;!&ndash; This tells the Front Controller to match on the following: */WEB-INF/pages/<TBDBYCONTROLLER>.jsp &ndash;&gt;
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <bean id="HandlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+
+    <context:component-scan base-package="com.springapp.mvc" />
+    <mvc:annotation-driven/>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- Added in tutorial 18, this references to the new studentmessages property file must be added so that
+        the validator knows where to find error messages when form validation fails. -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" >
+        <property name="basename" value="/WEB-INF/studentmessages" />
+        <!-- The following statement tells spring to not require a server restart for property updates and to
+                refresh the cache every 30 seconds, as described in tutorial 19. -->
+        <property name="cacheSeconds" value="30" />
+    </bean>
+
+    <!-- Add a reference to the interceptor for tutorial 23. All requests that go through this servlet
+            will go through this interceptor.
+    <mvc:interceptors>
+        <bean class="com.springapp.mvc.DayOfWeekBasedAccessInterceptor" />
+    </mvc:interceptors> -->
+
+    <!-- As described in tutorial 24, limit the urls that are passed through the interceptor. -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admissionForm.html"/>
+            <bean class="com.springapp.mvc.DayOfWeekBasedAccessInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>
